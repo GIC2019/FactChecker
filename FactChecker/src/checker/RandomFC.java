@@ -3,7 +3,7 @@ package checker;
 import java.util.Random;
 
 public class RandomFC {
-	private Random rnd;
+	private final Random rnd;
 	
 	public RandomFC() {
 		rnd = new Random();

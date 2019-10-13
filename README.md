@@ -1,0 +1,2 @@
+# FactChecker
+Mini Project --  SNLP

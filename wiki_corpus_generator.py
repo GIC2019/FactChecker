@@ -2,7 +2,10 @@
 import xml.sax
 import eventlet
 import time
-from FactChecker.cleaner import Cleaner
+import multiprocessing
+import datetime
+from clean_and_write import clean_and_write
+from clean_and_write import init
 
 class XMLHandler (xml.sax.handler.ContentHandler):
 
@@ -16,7 +19,12 @@ class XMLHandler (xml.sax.handler.ContentHandler):
         self.counter = 0
         self.exception_counter = 1
         self.jumping_counter = 0
-
+        self.cpu_count = multiprocessing.cpu_count()
+        l = multiprocessing.Lock()
+        self.s = multiprocessing.Semaphore(self.cpu_count-1)
+        self.proc_pool = multiprocessing.Pool(processes=self.cpu_count-1, initializer=init, initargs=(l,self.s,))
+    
+    
     """Opening tag of element, this method runs to find a "opening" tag, and access the tag
        if tag is 'title' or 'text', set the tag to the var current_tag
        and then create a list -- buffer_text to store the content in the tag.
@@ -49,45 +57,9 @@ class XMLHandler (xml.sax.handler.ContentHandler):
         if tag == self.current_tag:
             if self.current_tag == 'title':
                 self.title_string = ''.join(self.tag_title)
-
                 self.counter = self.counter + 1
-
-                file_index = int(self.counter/100000)
-                file = 'corpus0' + str(file_index) + '.txt'
-                with open(file, "a", encoding='utf-8') as f:
-                    f.write(self.title_string + '\n' + '---------------' + '\n')
 
             # Several texts need too long extraction time, if so, jump them, the limit of extraction time is 5 sec
             if self.current_tag == 'text':
-                try:
-                    get_text = False
-                    eventlet.monkey_patch()
-                    with eventlet.Timeout(5, False):
-                        self.text_string = Cleaner.clean_text(self.tag_text)
-                        get_text = True
-                    if not get_text:
-                        self.text_string = " "
-                        print("Jump", self.jumping_counter, ': ', self.title_string, ' ', self.counter)
-                        self.jumping_counter = self.jumping_counter + 1
-
-                    file_index = int(self.counter/100000)
-                    file = 'corpus0' + str(file_index) + '.txt'
-                    with open(file, "a", encoding='utf-8') as f:
-                        f.write(self.text_string + '\n' + '====================================================' + '\n')
-                except (ValueError, IndexError):
-                    print("Exception", self.exception_counter, ': ', self.title_string, ' ', self.counter)
-                    self.exception_counter = self.exception_counter + 1
-                    pass
-
-
-
-
-if __name__ == "__main__":
-
-    dumpfile = 'enwiki-latest-pages-articles.xml'
-    parser = xml.sax.make_parser()
-    parser.setFeature(xml.sax.handler.feature_namespaces, 0)
-    handler = XMLHandler()
-    parser.setContentHandler(handler)
-    parser.parse(dumpfile)
-    print('Done!!!!!')
+                self.s.acquire()
+                self.proc_pool.apply_async(clean_and_write, (self.title_string, self.tag_text, self.counter, self.exception_counter))

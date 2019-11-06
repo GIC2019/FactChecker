@@ -20,8 +20,11 @@ class XMLHandler (xml.sax.handler.ContentHandler):
         self.exception_counter = 1
         self.jumping_counter = 0
         self.cpu_count = multiprocessing.cpu_count()
+		# lock for the file, so two processes don't write simultaneously on it
         l = multiprocessing.Lock()
+		# counting-semaphore to only apply one workload on a process at one time
         self.s = multiprocessing.Semaphore(self.cpu_count-1)
+		# pool of cpu_count - 1 processes
         self.proc_pool = multiprocessing.Pool(processes=self.cpu_count-1, initializer=init, initargs=(l,self.s,))
     
     
@@ -59,7 +62,8 @@ class XMLHandler (xml.sax.handler.ContentHandler):
                 self.title_string = ''.join(self.tag_title)
                 self.counter = self.counter + 1
 
-            # Several texts need too long extraction time, if so, jump them, the limit of extraction time is 5 sec
             if self.current_tag == 'text':
+				# acquire one from the semaphore to only ever apply one tag_text to one process at the same time
                 self.s.acquire()
+				# apply the workload to a free process: clean the tag_text and write title + cleaned text to the file
                 self.proc_pool.apply_async(clean_and_write, (self.title_string, self.tag_text, self.counter, self.exception_counter))

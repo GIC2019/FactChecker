@@ -1,4 +1,4 @@
-from wiki_corpus_generator import XMLHandler
+from CorpusGenerator import XMLHandler
 import datetime
 import xml.sax
 if __name__ == '__main__':

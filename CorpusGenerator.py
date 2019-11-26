@@ -78,6 +78,24 @@ class XMLHandler (xml.sax.handler.ContentHandler):
                 # if title's name contains "List of ", then don't extract the text
                     if 'List of' in self.title_string:
                         self.text_string = ''
+                # eliminate some exceptions
+                    elif 'Wikipedia:' in self.title_string:
+                        self.text_string = ''
+                    elif 'Portal:' in self.title_string:
+                        self.text_string = ''
+                    elif 'Template:' in self.title_string:
+                        self.text_string = ''
+                    elif 'Draft:' in self.title_string:
+                        self.text_string = ''
+                    elif 'MediaWiki:' in self.title_string:
+                        self.text_string = ''
+                    elif 'File:' in self.title_string:
+                        self.text_string = ''
+                    elif 'Module:' in self.title_string:
+                        self.text_string = ''
+                    elif 'Category:' in self.title_string:
+                        self.text_string = '' 
+             
                  # eliminate the redirected article
                 # if tag_text[0] contains "#REDIRECT", then don't extract the text
                     elif '#REDIRECT' in str(self.tag_text[0]):

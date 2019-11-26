@@ -12,7 +12,9 @@ def clean_and_write(corpus_index, title_string, tag_text):
         # writing to the file
         file_lock.acquire()
         with open(file, "a", encoding='utf-8') as f:
+            f.write(title_string + '\n')
             f.write(text_string + '\n')
+            f.write("==========")
         file_lock.release()
     except (ValueError, IndexError):
         print("Exception in:", title_string)

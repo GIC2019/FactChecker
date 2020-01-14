@@ -37,7 +37,9 @@ class XMLHandler (xml.sax.handler.ContentHandler):
 
         # number of processors in this computer
         self.cpu_count = multiprocessing.cpu_count()
-        # lock for the file, so two processes don't write simultaneously on it
+        if self.cpu_count < 2:
+            self.cpu_count = 2
+		# lock for the file, so two processes don't write simultaneously on it
         self.l = multiprocessing.Lock()
         # counting-semaphore to only apply one workload on a process at one time
         self.s = multiprocessing.Semaphore(self.cpu_count - 1)

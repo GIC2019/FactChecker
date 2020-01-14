@@ -1,8 +1,8 @@
-# Guideline of FactChecker
+# Guideline for our FactChecker
 
 #### 1. Check the Fact
 
-> **Notice:**  The result files (training_result.ttl and result.ttl) of this mini-project have been already generated and stored in the folder ".\FactChecker\Code\Server". If you want to generate the result files yourself, please delete the files or clear the content of these files at first.
+> **Notice:**  The result files (training_result.ttl and result.ttl) of this mini-project have been already generated and stored in the folder ".\FactChecker\Code\Server". If you want to generate the result files yourself, please delete the files, rename them or clear the content of these files first.
 
 Run the FactChecker in command prompt:
 
@@ -12,7 +12,7 @@ Run the FactChecker in command prompt:
 
    ​	\> python check_fact.py
 
-After the two steps you can get two result files:
+After these two steps two result files will be generated:
 
 + file: training_result.ttl
 
@@ -24,7 +24,7 @@ After the two steps you can get two result files:
   
   
 
-> **Notice:** The corpus for the FactChecker has been generated and all the corpus files are already store in the file ".\FactChecker\Code\\Corpus_Generator\Corpus". If you want to generate these corpus files yourself, please **delete(or replace)** all corpus file at first.
+> **Notice:** The corpus for the FactChecker has been generated and all the corpus files are already store in the file ".\FactChecker\Code\\Corpus_Generator\Corpus". If you want to generate these corpus files yourself, please **delete(or replace)** all corpus file first.
 
 #### 2. Corpus_Generator
 
@@ -32,7 +32,7 @@ After the two steps you can get two result files:
 
    This file is English Wikipedia database dump file. A warning for this download, this file is very large, in size 16GB.
 
-2. Step: Unzip the file "enwiki-latest-pages-articles.xml.bz2" into the folder ".\FactChecker\Code\dumpfile". And rename the unzipped file with the filename "dumpfile.xml".  A warning for the  unzipped dumpfile, this file is in size 70GB.
+2. Step: Unzip the file "enwiki-latest-pages-articles.xml.bz2" into the folder ".\FactChecker\Code\dumpfile". Rename the unzipped file with to "dumpfile.xml".  A warning for the  unzipped dumpfile, this file is in size 70GB.
 
 3. Step: Use the command 'cd filepath' to go to the folder ".\FactChecker\Code\\Corpus_Generator\". 
 
@@ -40,4 +40,4 @@ After the two steps you can get two result files:
 
    ​	> python generate_corpus.py
 
- After the four steps you can get 164 corpus files, each file is in size 45MB, and all files are stored in the subfolder ".\FactChecker\Code\\Corpus_Generator\Corpus". 
+ After the four steps you can get 164 corpus files, each file is in size 45MB. All files are stored in the subfolder ".\FactChecker\Code\\Corpus_Generator\Corpus". 
